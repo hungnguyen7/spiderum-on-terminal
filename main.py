@@ -1,71 +1,47 @@
-import requests
-from imgcat import imgcat
+from api.api import SpiderumAPI
+from database.database import Database
+from display.post_display import PostDisplay
+from utils.colors import RED, YELLOW, GREEN
+from utils.printer import Printer
+class SpiderumApp:
+    def __init__(self):
+        self.db = Database()
+        self.current_page = 1
+        self.posts = []
 
-BASE_URL = 'https://spiderum.com/api/v1'
-FEED_URL = f'{BASE_URL}/feed/getAllPosts?type=hot&page={{page_idx}}'
-POST_URL = f'{BASE_URL}/post/'
-
-
-def get_posts(page_idx):
-    url = FEED_URL.format(page_idx=page_idx)
-    print("Getting data from:", url)
-    response = requests.get(url, verify=False)
-    response.raise_for_status()
-    data = response.json()
-    return data['posts']["items"]
-
-
-def show_list_posts(posts):
-    for idx, post in enumerate(posts):
-        print(f'{idx}. {post["title"]}')
-
-
-def get_post_content(slug):
-    url = POST_URL + slug
-    response = requests.get(url, verify=False)
-    response.raise_for_status()
-    data = response.json()
-    post = data["post"]
-    print(f'\n{post["title"]}\n')
-    for block in post["blockBody"]["blocks"]:
-        if block["type"] == "smallerHeader":
-            print(f'\n{block["data"]["text"]}\n')
-            
-        if block["type"] == "paragraph":
-            print(block["data"]["text"])
-            
-        # if block["type"] == "image":
-        #     url = block["data"]["file"]["url"]
-        #     imgcat(requests.get(url, verify=False).content)
-
-def main():
-    current_page = 1
-    posts = get_posts(current_page)
-    show_list_posts(posts)
-    
-    while True:
-        ans = input("Select a post to read (N to next page, P to previous page, L to show list, X to exit): ").strip().upper()
-        
-        if ans == 'X':
-            break
-        elif ans == 'N':
-            current_page += 1
-            posts = get_posts(current_page)
-            show_list_posts(posts)
-        elif ans == 'P':
-            if current_page > 1:
-                current_page -= 1
-                posts = get_posts(current_page)
-                show_list_posts(posts)
+    def run(self):
+        self.fetch_and_display_posts()
+        while True:
+            ans = input("Select a post to read (N to next page, P to previous page, L to show list, X to exit): ").strip().upper()
+            if ans == 'X':
+                Printer.print_with_style("Goodbye!", color=GREEN)
+                break
+            elif ans == 'N':
+                self.current_page += 1
+                self.fetch_and_display_posts()
+            elif ans == 'P':
+                if self.current_page > 1:
+                    self.current_page -= 1
+                    self.fetch_and_display_posts()
+                else:
+                    Printer.print_with_style("This is the first page", color=YELLOW)
+            elif ans == 'L':
+                PostDisplay.show_list_posts(self.posts, self.db)
+            elif ans.isdigit() and 0 <= int(ans) < len(self.posts):
+                slug = self.posts[int(ans) - 1]['slug']
+                self.db.mark_post_as_read(slug)
+                post_content = SpiderumAPI.fetch_post_content(slug)
+                PostDisplay.display_post_content(post_content)
             else:
-                print("This is the first page")
-        elif ans == 'L':
-            show_list_posts(posts)
-        elif ans.isdigit() and 0 <= int(ans) < len(posts):
-            get_post_content(posts[int(ans)]['slug'])
-        else:
-            print("Invalid input. Please try again.")
-    
+                Printer.print_with_style("Invalid input. Please try again.", color=RED)
+
+    def fetch_and_display_posts(self):
+        self.posts = SpiderumAPI.fetch_posts(self.current_page)
+        for post in self.posts:
+            self.db.insert_post(post['slug'])
+            
+        PostDisplay.show_list_posts(self.posts, self.db)
 
 if __name__ == '__main__':
-    main()
+    app = SpiderumApp()
+    app.run()
