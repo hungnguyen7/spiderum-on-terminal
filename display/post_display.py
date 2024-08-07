@@ -13,13 +13,12 @@ class PostDisplay:
             print(f"Error initializing TTS: {e}")
         
     @staticmethod
-    def show_list_posts(posts, db):
+    def show_list_posts(posts):
         for idx, post in enumerate(posts):
-            is_read = db.is_post_read(post['slug'])
-            status = 'Read' if is_read else 'New'
-            Printer.print_with_style(f'{idx+1}. {post["title"]} ({status})', color = PURPLE if is_read else GREEN)
+            status = 'Read' if post["is_read"] else 'New'
+            Printer.print_with_style(f'{idx+1}. {post["title"]} ({status})', color = PURPLE if post["is_read"] else GREEN)
 
-    def display_post_content(self, post, enable_tts):
+    def display_post_content(self, post, enable_tts, show_image):
         Printer.print_with_style(f'---{post["title"]}---', color=GREEN)
         for block in post["blockBody"]["blocks"]:
             if block["type"] == "smallerHeader":
@@ -38,10 +37,15 @@ class PostDisplay:
                         self.tts.speak(text)
                     else:
                         Printer.print_with_style("Error initializing TTS", color=RED)
+            elif block["type"] == "image":
+                if show_image:
+                    Printer.print_image_from_url(block["data"]["file"]["url"])
     
     @staticmethod
     def show_help():
         Printer.print_with_style('Usage:', color=GREEN)
         Printer.print_with_style("  Type 'N' to fetch next page")
         Printer.print_with_style("  Type 'P' to fetch previous page")
+        Printer.print_with_style("  Type 'L' to list all posts")
         Printer.print_with_style("  Type 'V' to enable text to speech, re-type to disable")
+        Printer.print_with_style("  Type 'I' to show post image, re-type to hide")
