@@ -40,7 +40,7 @@ class PostDisplay:
             Printer.print_image_from_url(block["data"]["file"]["url"])
 
     def print_and_speak(self, text, color, enable_tts):
-        Printer.print_with_style(text, color=color)
+        Printer.print_with_style(f"\n{text}", color=color)
         if enable_tts and self.tts:
             self.tts.speak(text)
         elif enable_tts:
