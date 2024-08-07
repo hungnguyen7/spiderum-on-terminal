@@ -30,7 +30,8 @@ class PostDisplay:
 
     def display_block(self, block, enable_tts, show_image):
         block_type = block["type"]
-        text = re.sub(r'<[^>]*>', '', block["data"].get("text", ""))
+        # * Remove HTML tags and &nbsp; characters from text
+        text = re.sub(r'<[^>]*>|&nbsp;', '', block["data"].get("text", ""))
         
         if block_type == "smallerHeader":
             self.print_and_speak(text, BLUE, enable_tts)
