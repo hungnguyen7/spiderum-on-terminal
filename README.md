@@ -15,8 +15,19 @@ python main.py
 
 ## Current Features
 - Read the latest articles from Spiderum.
-- Speak-to-Text feature to read the article out loud.
+- Text-to-Speech feature.
 - Enable/Disable showing images in the article.
+- Save the article to a text file.
+
+## Keyboard Shortcuts
+- `N`: Fetch the next list of articles.
+- `P`: Fetch the previous list of articles.
+- `X`: Quit the program.
+- `L`: To show list of articles.
+- `V`: To enable/disable the text-to-speech feature.
+- `I`: To enable/disable showing images in the article.
+- `B`: To bookmark the article.
+- `H`: To show the help menu.
 
 
 **Notes:** On Windows, the Speak-to-Text feature uses the pyttsx3 library, which requires the Vietnamese voice to be enabled. To enable Vietnamese voice on Windows, follow the instructions in this [video tutorial](https://www.youtube.com/watch?v=aw7FVWOY1yE). On other operating systems, the feature will use the Google Text-to-Speech API to read the article.

@@ -1,8 +1,9 @@
 from api.api import SpiderumAPI
 from database.database import Database
-from display.post_display import PostDisplay
+from utils.post_display import PostDisplay
 from utils.colors import RED, YELLOW, GREEN
 from utils.printer import Printer
+from utils.save_post_to_file import save_post_to_file
 
 class SpiderumApp:
     def __init__(self):
@@ -12,6 +13,7 @@ class SpiderumApp:
         self.posts = []
         self.enable_tts = False
         self.show_image = False
+        self.selected_post_index = None
 
     def run(self):
         self.fetch_and_display_posts()
@@ -33,6 +35,8 @@ class SpiderumApp:
                 self.toggle_tts()
             elif ans == 'I':
                 self.toggle_image()
+            elif ans == 'B':
+                self.mark_post_as_favorite()
             elif ans.isdigit() and 0 < int(ans) <= len(self.posts):
                 self.display_post(int(ans) - 1)
             else:
@@ -85,6 +89,8 @@ class SpiderumApp:
         Printer.print_with_style(f"Image is {'enabled' if self.show_image else 'disabled'}", color=YELLOW)
 
     def display_post(self, index):
+        self.selected_post_index = index
+        
         slug = self.posts[index]['slug']
         # * Mark post as read in database
         self.db.mark_post_as_read(slug)
@@ -92,6 +98,16 @@ class SpiderumApp:
         # * Fetch and display post content
         post_content = SpiderumAPI.fetch_post_content(slug)
         self.post_display.display_post_content(post_content, self.enable_tts, self.show_image)
+        
+    def mark_post_as_favorite(self):
+        if self.selected_post_index is None:
+            Printer.print_with_style("No post selected", color=RED)
+            return
+        
+        post = self.posts[self.selected_post_index]
+        save_post_to_file(post)
+        
+        
 
 if __name__ == '__main__':
     app = SpiderumApp()

@@ -5,7 +5,7 @@ from utils.tts import TTS
 
 class PostDisplay:
     def __init__(self):
-        # Initialize text to speech
+        # * Initialize text to speech
         self.tts = None
         try:
             self.tts = TTS()
@@ -43,9 +43,17 @@ class PostDisplay:
     
     @staticmethod
     def show_help():
+        keymap = {
+            'N': 'Fetch the next list of articles.',
+            'P': 'Fetch the previous list of articles.',
+            'X': 'Quit the program.',
+            'L': 'Show list of articles.',
+            'V': 'Enable/disable the text-to-speech feature.',
+            'I': 'Enable/disable showing images in the article.',
+            'B': 'Bookmark the article (save post to file).',
+            'H': 'Show the help menu.'
+        }
+
         Printer.print_with_style('Usage:', color=GREEN)
-        Printer.print_with_style("  Type 'N' to fetch next page")
-        Printer.print_with_style("  Type 'P' to fetch previous page")
-        Printer.print_with_style("  Type 'L' to list all posts")
-        Printer.print_with_style("  Type 'V' to enable text to speech, re-type to disable")
-        Printer.print_with_style("  Type 'I' to show post image, re-type to hide")
+        for key, action in keymap.items():
+            Printer.print_with_style(f"  Type '{key}' to {action}")
