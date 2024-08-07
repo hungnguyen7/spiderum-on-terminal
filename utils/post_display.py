@@ -1,5 +1,5 @@
 from utils.printer import Printer
-from utils.colors import GREEN, BLUE, LIGHT_GRAY, PURPLE, RED
+from utils.colors import GREEN, BLUE, PURPLE, RED, GRAY
 import re
 from utils.tts import TTS
 
@@ -35,7 +35,7 @@ class PostDisplay:
         if block_type == "smallerHeader":
             self.print_and_speak(text, BLUE, enable_tts)
         elif block_type == "paragraph":
-            self.print_and_speak(text, LIGHT_GRAY, enable_tts)
+            self.print_and_speak(text, GRAY, enable_tts)
         elif block_type == "image" and show_image:
             Printer.print_image_from_url(block["data"]["file"]["url"])
 
