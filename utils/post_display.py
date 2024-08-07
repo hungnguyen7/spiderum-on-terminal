@@ -3,44 +3,49 @@ from utils.colors import GREEN, BLUE, LIGHT_GRAY, PURPLE, RED
 import re
 from utils.tts import TTS
 
+
 class PostDisplay:
     def __init__(self):
-        # * Initialize text to speech
-        self.tts = None
+        self.tts = self.initialize_tts()
+
+    @staticmethod
+    def initialize_tts():
         try:
-            self.tts = TTS()
+            return TTS()
         except RuntimeError as e:
             print(f"Error initializing TTS: {e}")
-        
+            return None
+
     @staticmethod
     def show_list_posts(posts):
         for idx, post in enumerate(posts):
             status = 'Read' if post["is_read"] else 'New'
-            Printer.print_with_style(f'{idx+1}. {post["title"]} ({status})', color = PURPLE if post["is_read"] else GREEN)
+            color = PURPLE if post["is_read"] else GREEN
+            Printer.print_with_style(f'{idx + 1}. {post["title"]} ({status})', color=color)
 
     def display_post_content(self, post, enable_tts, show_image):
         Printer.print_with_style(f'---{post["title"]}---', color=GREEN)
         for block in post["blockBody"]["blocks"]:
-            if block["type"] == "smallerHeader":
-                text = re.sub(r'<[^>]*>', '', block["data"]["text"])
-                Printer.print_with_style(text, color=BLUE)
-                if enable_tts:
-                    if self.tts is not None:
-                        self.tts.speak(text)
-                    else:
-                        Printer.print_with_style("Error initializing TTS", color=RED)
-            elif block["type"] == "paragraph":
-                text = re.sub(r'<[^>]*>', '', block["data"]["text"])
-                Printer.print_with_style(text, color=LIGHT_GRAY)
-                if enable_tts:
-                    if self.tts is not None:
-                        self.tts.speak(text)
-                    else:
-                        Printer.print_with_style("Error initializing TTS", color=RED)
-            elif block["type"] == "image":
-                if show_image:
-                    Printer.print_image_from_url(block["data"]["file"]["url"])
-    
+            self.display_block(block, enable_tts, show_image)
+
+    def display_block(self, block, enable_tts, show_image):
+        block_type = block["type"]
+        text = re.sub(r'<[^>]*>', '', block["data"].get("text", ""))
+        
+        if block_type == "smallerHeader":
+            self.print_and_speak(text, BLUE, enable_tts)
+        elif block_type == "paragraph":
+            self.print_and_speak(text, LIGHT_GRAY, enable_tts)
+        elif block_type == "image" and show_image:
+            Printer.print_image_from_url(block["data"]["file"]["url"])
+
+    def print_and_speak(self, text, color, enable_tts):
+        Printer.print_with_style(text, color=color)
+        if enable_tts and self.tts:
+            self.tts.speak(text)
+        elif enable_tts:
+            Printer.print_with_style("Error initializing TTS", color=RED)
+
     @staticmethod
     def show_help():
         keymap = {
