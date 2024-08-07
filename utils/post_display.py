@@ -52,6 +52,7 @@ class PostDisplay:
         keymap = {
             'N': 'Fetch the next list of articles.',
             'P': 'Fetch the previous list of articles.',
+            'F': 'Go to the first page of list of articles.',
             'X': 'Quit the program.',
             'L': 'Show list of articles.',
             'V': 'Enable/disable the text-to-speech feature.',

@@ -26,6 +26,8 @@ class SpiderumApp:
                 self.next_page()
             elif ans == 'P':
                 self.previous_page()
+            elif ans == 'F':
+                self.first_page()
             elif ans == 'H':
                 self.show_help()
             elif ans == 'L':
@@ -79,6 +81,11 @@ class SpiderumApp:
         else:
             Printer.print_with_style("This is the first page", color=YELLOW)
 
+    def first_page(self):
+        page_index = 1
+        self.db.upsert_page_index(page_index)
+        self.fetch_and_display_posts()
+        
     def show_help(self):
         self.post_display.show_help()
 

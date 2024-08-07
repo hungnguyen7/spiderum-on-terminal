@@ -22,6 +22,7 @@ python main.py
 ## Keyboard Shortcuts
 - `N`: Fetch the next list of articles.
 - `P`: Fetch the previous list of articles.
+- `F`: Go to the first page of the list.
 - `X`: Quit the program.
 - `L`: To show list of articles.
 - `V`: To enable/disable the text-to-speech feature.
