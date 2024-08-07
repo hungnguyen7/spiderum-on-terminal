@@ -9,7 +9,6 @@ class SpiderumApp:
     def __init__(self):
         self.db = Database()
         self.post_display = PostDisplay()
-        self.current_page = 1
         self.posts = []
         self.enable_tts = False
         self.show_image = False
@@ -48,7 +47,15 @@ class SpiderumApp:
         if self.show_image:
             Printer.print_with_style("Warning: Image is enabled.", color=YELLOW)
             
-        self.posts = SpiderumAPI.fetch_posts(self.current_page)
+        # * Get the current page index from the database
+        page_index = self.db.get_page_index()
+        
+        # * If page index is not set, set it to 1
+        if not page_index:
+            page_index = 1
+            self.db.upsert_page_index(page_index)
+        
+        self.posts = SpiderumAPI.fetch_posts(page_index)
         # * Insert posts into database, if not already
         for post in self.posts:
             self.db.insert_post(post['slug'])
@@ -59,12 +66,15 @@ class SpiderumApp:
         Printer.print_with_style("Goodbye!", color=GREEN)
 
     def next_page(self):
-        self.current_page += 1
+        page_index = self.db.get_page_index()
+        page_index += 1
+        self.db.upsert_page_index(page_index)
         self.fetch_and_display_posts()
 
     def previous_page(self):
-        if self.current_page > 1:
-            self.current_page -= 1
+        if self.db.get_page_index() > 1:
+            page_index = self.db.get_page_index() - 1
+            self.db.upsert_page_index(page_index)
             self.fetch_and_display_posts()
         else:
             Printer.print_with_style("This is the first page", color=YELLOW)
