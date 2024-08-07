@@ -5,9 +5,9 @@ def save_post_to_file(post):
     os.makedirs('favorite_posts', exist_ok=True)
     # # Define the content to save
     content = f"""
-    Title: {post["title"]}
-    Description: {post["description"]}
-    Link: https://spiderum.com/bai-dang/{post["slug"]}
+Title: {post["title"]}
+Description: {post["description"]}
+Link: https://spiderum.com/bai-dang/{post["slug"]}
     """
     
     # Create a safe filename by replacing any potentially problematic characters in the slug
