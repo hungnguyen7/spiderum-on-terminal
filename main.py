@@ -1,5 +1,6 @@
 from api.api import SpiderumAPI
-from database.database import Database
+from database.page_tracking import PageTracking
+from database.post_tracking import PostTracking
 from utils.post_display import PostDisplay
 from utils.colors import RED, YELLOW, GREEN
 from utils.printer import Printer
@@ -7,7 +8,8 @@ from utils.save_post_to_file import save_post_to_file
 
 class SpiderumApp:
     def __init__(self):
-        self.db = Database()
+        self.page_tracking = PageTracking()
+        self.post_tracking = PostTracking()
         self.post_display = PostDisplay()
         self.posts = []
         self.enable_tts = False
@@ -50,17 +52,17 @@ class SpiderumApp:
             Printer.print_with_style("Warning: Image is enabled.", color=YELLOW)
             
         # * Get the current page index from the database
-        page_index = self.db.get_page_index()
+        page_index = self.page_tracking.get_page_index()
         
         # * If page index is not set, set it to 1
         if not page_index:
             page_index = 1
-            self.db.upsert_page_index(page_index)
+            self.page_tracking.upsert_page_index(page_index)
         
         self.posts = SpiderumAPI.fetch_posts(page_index)
         # * Insert posts into database, if not already
         for post in self.posts:
-            self.db.insert_post(post['slug'])
+            self.post_tracking.insert_post(post['slug'])
             
         self.show_list_posts()
 
@@ -68,22 +70,22 @@ class SpiderumApp:
         Printer.print_with_style("Goodbye!", color=GREEN)
 
     def next_page(self):
-        page_index = self.db.get_page_index()
+        page_index = self.page_tracking.get_page_index()
         page_index += 1
-        self.db.upsert_page_index(page_index)
+        self.page_tracking.upsert_page_index(page_index)
         self.fetch_and_display_posts()
 
     def previous_page(self):
-        if self.db.get_page_index() > 1:
-            page_index = self.db.get_page_index() - 1
-            self.db.upsert_page_index(page_index)
+        if self.page_tracking.get_page_index() > 1:
+            page_index = self.page_tracking.get_page_index() - 1
+            self.page_tracking.upsert_page_index(page_index)
             self.fetch_and_display_posts()
         else:
             Printer.print_with_style("This is the first page", color=YELLOW)
 
     def first_page(self):
         page_index = 1
-        self.db.upsert_page_index(page_index)
+        self.page_tracking.upsert_page_index(page_index)
         self.fetch_and_display_posts()
         
     def show_help(self):
@@ -92,7 +94,7 @@ class SpiderumApp:
     def show_list_posts(self):
         posts_with_status = []
         for post in self.posts:
-            post['is_read'] = self.db.is_post_read(post['slug'])
+            post['is_read'] = self.post_tracking.is_post_read(post['slug'])
             posts_with_status.append(post)
             
         self.post_display.show_list_posts(posts_with_status)
@@ -110,7 +112,7 @@ class SpiderumApp:
         
         slug = self.posts[index]['slug']
         # * Mark post as read in database
-        self.db.mark_post_as_read(slug)
+        self.post_tracking.mark_post_as_read(slug)
         
         # * Fetch and display post content
         post_content = SpiderumAPI.fetch_post_content(slug)
