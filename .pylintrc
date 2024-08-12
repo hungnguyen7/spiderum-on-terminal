@@ -1,0 +1,52 @@
+# .pylintrc configuration file
+
+[MASTER]
+
+# Specify the Python version to be used by pylint.
+# python=3.9
+
+[MESSAGES CONTROL]
+
+# Enable or disable messages issued by pylint.
+# enable=unused-import,unused-variable
+disable=missing-module-docstring
+
+[REPORTS]
+
+# Set the output format for pylint reports.
+# output-format=text
+
+[FORMAT]
+
+# Set the maximum line length.
+# max-line-length=120
+
+[TYPECHECK]
+
+# Enable or disable type checking.
+# disable=missing-module-docstring,missing-class-docstring
+
+[IMPORTS]
+
+# Set the import order style.
+# import-order-style=google
+
+[STYLE]
+
+# Set the maximum number of arguments for function or method.
+# max-args=5
+
+[PYLINT]
+
+# Set the maximum number of local variables for function or method.
+# max-locals=10
+
+[DESIGN]
+
+# Set the maximum number of branches for function or method.
+# max-branches=12
+
+[LOGGING]
+
+# Set the logging level for pylint.
+# logging-level=INFO
