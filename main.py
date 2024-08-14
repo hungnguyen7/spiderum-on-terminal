@@ -1,4 +1,4 @@
-from api.api import SpiderumAPI
+from api.spiderum import SpiderumAPI
 from database.page_tracking import PageTracking
 from database.post_tracking import PostTracking
 from utils.post_display import PostDisplay
