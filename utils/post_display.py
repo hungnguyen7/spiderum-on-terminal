@@ -76,7 +76,9 @@ class PostDisplay:
         """
         block_type = block["type"]
         # * Remove HTML tags and &nbsp; characters from text
-        text = re.sub(r'<[^>]*>|&nbsp;', '', block["data"].get("text", ""))
+        text = ""
+        if isinstance(block, dict) and "data" in block:
+            text = re.sub(r'<[^>]*>|&nbsp;', '', block["data"].get("text", ""))
 
         if block_type == "smallerHeader":
             self.print_and_speak(text, BLUE, enable_tts)
