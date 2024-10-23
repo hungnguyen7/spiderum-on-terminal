@@ -37,38 +37,33 @@ class SpiderumApp:
         self.fetch_and_display_posts()
 
         while True:
-            try:
-                ans = input(
-                    "Select a post to read, or type 'H' for help, or 'X' to exit: ").upper().strip()
-                if ans == 'X':
-                    self.exit_app()
-                    break
-
-                if ans == 'N':
-                    self.next_page()
-                elif ans == 'P':
-                    self.previous_page()
-                elif ans == 'F':
-                    self.first_page()
-                elif ans == 'H':
-                    self.show_help()
-                elif ans == 'L':
-                    self.show_list_posts()
-                elif ans == 'V':
-                    self.toggle_tts()
-                elif ans == 'I':
-                    self.toggle_image()
-                elif ans == 'B':
-                    self.mark_post_as_favorite()
-                elif ans.isdigit() and 0 < int(ans) <= len(self.posts):
-                    self.display_post(int(ans) - 1)
-                else:
-                    Printer.print_with_style(
-                        "Invalid input. Please try again.", color=RED)
-            except KeyboardInterrupt:
-                print()
+            ans = input(
+                "Select a post to read, or type 'H' for help, or 'X' to exit: ").upper().strip()
+            if ans == 'X':
                 self.exit_app()
-                sys.exit(0)
+                break
+
+            if ans == 'N':
+                self.next_page()
+            elif ans == 'P':
+                self.previous_page()
+            elif ans == 'F':
+                self.first_page()
+            elif ans == 'H':
+                self.show_help()
+            elif ans == 'L':
+                self.show_list_posts()
+            elif ans == 'V':
+                self.toggle_tts()
+            elif ans == 'I':
+                self.toggle_image()
+            elif ans == 'B':
+                self.mark_post_as_favorite()
+            elif ans.isdigit() and 0 < int(ans) <= len(self.posts):
+                self.display_post(int(ans) - 1)
+            else:
+                Printer.print_with_style(
+                    "Invalid input. Please try again.", color=RED)
 
     def fetch_and_display_posts(self):
         """Fetch and display posts from the Spiderum API."""
@@ -170,5 +165,9 @@ class SpiderumApp:
 
 
 if __name__ == '__main__':
-    app = SpiderumApp()
-    app.run()
+    try:
+        app = SpiderumApp()
+        app.run()
+    except KeyboardInterrupt:
+        Printer.print_with_style("\nGoodbye 😉!", color=GREEN)
+        sys.exit()
