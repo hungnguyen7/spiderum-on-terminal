@@ -4,7 +4,7 @@ from database.post_tracking import PostTracking
 from utils.post_display import PostDisplay
 from utils.colors import RED, YELLOW, GREEN
 from utils.printer import Printer
-from utils.save_post_to_file import save_post_to_file
+from utils.bookmark import save_post_to_file
 import sys
 
 
