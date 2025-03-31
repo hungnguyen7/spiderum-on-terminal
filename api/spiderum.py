@@ -5,7 +5,7 @@ import time
 class SpiderumAPI:
     """
     A simple API client for Spiderum
-    
+
     Attributes:
         BASE_URL: The base URL of the Spiderum API
         FEED_URL: The URL to get all posts
@@ -19,10 +19,10 @@ class SpiderumAPI:
     def fetch_posts(cls, page_idx):
         """
         Fetch all posts from Spiderum
-        
+
         Args:
             page_idx (int): The page index to get posts from
-            
+
         Returns:
             list: A list of posts
         """
@@ -41,10 +41,10 @@ class SpiderumAPI:
     def fetch_post_content(cls, slug):
         """
         Fetch a post by slug
-        
+
         Args:
             slug (str): The slug of the post
-            
+
         Returns:
             dict: The post content
         """
@@ -57,3 +57,17 @@ class SpiderumAPI:
             print("ConnectionError: retrying in 5 seconds")
             time.sleep(5)
             return cls.fetch_post_content(slug)
+
+    @staticmethod
+    def fetch_post_by_url(url):
+        """
+        Fetch a post by URL
+
+        Args:
+            url (str): The URL of the post
+
+        Returns:
+            dict: The post content
+        """
+        slug = url.split('/')[-1]
+        return SpiderumAPI.fetch_post_content(slug)

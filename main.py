@@ -59,6 +59,8 @@ class SpiderumApp:
                 self.toggle_image()
             elif ans == 'B':
                 self.mark_post_as_favorite()
+            elif ans == 'U':
+                self.show_post_via_url()
             elif ans.isdigit() and 0 < int(ans) <= len(self.posts):
                 self.display_post(int(ans) - 1)
             else:
@@ -162,6 +164,16 @@ class SpiderumApp:
 
         post = self.posts[self.selected_post_index]
         save_post_to_file(post)
+
+    def show_post_via_url(self):
+        """View a post by URL."""
+        url = input("Enter the URL of the post: ").strip()
+        post = SpiderumAPI.fetch_post_by_url(url)
+        if post:
+            self.post_display.display_post_content(
+                post, self.enable_tts, self.show_image)
+        else:
+            Printer.print_with_style("Post not found", color=RED)
 
 
 if __name__ == '__main__':
