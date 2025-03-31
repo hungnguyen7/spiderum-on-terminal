@@ -2,4 +2,3 @@ __pycache__
 database/*.json
 tmp/*
 .vscode/*
-favorite_posts/*

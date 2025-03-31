@@ -1,23 +1,48 @@
 import os
+import json
 
 
-def save_post_to_file(post):
-    """Save a post to a text file in the 'favorite_posts' directory."""
-    # Ensure the directory exists
-    os.makedirs('favorite_posts', exist_ok=True)
-    # # Define the content to save
-    content = f"""
-Title: {post["title"]}
-Description: {post["description"]}
-Link: https://spiderum.com/bai-dang/{post["slug"]}
-    """
+def add_post_to_bookmarks(post):
+    """Save a post to the bookmark list in the database folder."""
+    try:
+        file_path = os.path.join('database', 'bookmark.json')
+        # * Ensure the directory exists
+        os.makedirs('database', exist_ok=True)
 
-    # Create a safe filename by replacing any potentially problematic characters in the slug
-    safe_slug = post["slug"].replace('/', '_').replace('\\', '_')
+        # * Load existing bookmarks
+        bookmarks = []
+        if os.path.exists(file_path):
+            with open(file_path, 'r') as file:
+                bookmarks = json.load(file)
 
-    # Save to file
-    file_path = os.path.join('favorite_posts', f'{safe_slug}.txt')
-    with open(file_path, 'w', encoding='utf-8') as file:
-        file.write(content)
+        # * Check if the post is already bookmarked
+        for bookmark in bookmarks:
+            if bookmark['slug'] == post['slug']:
+                print("Post already bookmarked.")
+                return
+        # * Add the post to the bookmarks
+        bookmarks.append({
+            'title': post['title'],
+            'url': f"https://spiderum.com/bai-dang/{post['slug']}",
+            "slug": post["slug"],
+        })
+        # * Save the bookmarks
+        with open(file_path, 'w') as file:
+            json.dump(bookmarks, file, indent=4)
+        print(f"Post saved to {file_path}")
+    except Exception as e:
+        print(f"Error: {e}")
 
-    print(f"Post saved to {file_path}")
+
+def list_bookmarks():
+    """List all bookmarks in the database folder."""
+    try:
+        file_path = os.path.join('database', 'bookmark.json')
+        if not os.path.exists(file_path):
+            print("No bookmarks found.")
+            return
+        with open(file_path, 'r') as file:
+            bookmarks = json.load(file)
+            return bookmarks
+    except Exception as e:
+        print(f"Error: {e}")

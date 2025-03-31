@@ -4,7 +4,7 @@ from database.post_tracking import PostTracking
 from utils.post_display import PostDisplay
 from utils.colors import RED, YELLOW, GREEN
 from utils.printer import Printer
-from utils.bookmark import save_post_to_file
+from utils.bookmark import add_post_to_bookmarks, list_bookmarks
 import sys
 
 
@@ -28,6 +28,7 @@ class SpiderumApp:
         self.post_tracking = PostTracking()
         self.post_display = PostDisplay()
         self.posts = []
+        self.bookmarks = []
         self.enable_tts = False
         self.show_image = False
         self.selected_post_index = None
@@ -59,10 +60,14 @@ class SpiderumApp:
                 self.toggle_image()
             elif ans == 'B':
                 self.mark_post_as_favorite()
+            elif ans == 'BM':
+                self.show_bookmarks()
             elif ans == 'U':
                 self.show_post_via_url()
             elif ans.isdigit() and 0 < int(ans) <= len(self.posts):
                 self.display_post(int(ans) - 1)
+            elif ans[0].upper() == 'B' and ans[1:].isdigit() and 0 < int(ans[1:]) <= len(self.bookmarks):
+                self.display_bookmark(int(ans[1:]) - 1)
             else:
                 Printer.print_with_style(
                     "Invalid input. Please try again.", color=RED)
@@ -163,7 +168,7 @@ class SpiderumApp:
             return
 
         post = self.posts[self.selected_post_index]
-        save_post_to_file(post)
+        add_post_to_bookmarks(post)
 
     def show_post_via_url(self):
         """View a post by URL."""
@@ -174,6 +179,18 @@ class SpiderumApp:
                 post, self.enable_tts, self.show_image)
         else:
             Printer.print_with_style("Post not found", color=RED)
+
+    def show_bookmarks(self):
+        """Show bookmarks."""
+        self.bookmarks = list_bookmarks()
+        self.post_display.show_bookmarks(self.bookmarks)
+
+    def display_bookmark(self, index):
+        """Display a bookmark."""
+        bookmark = self.bookmarks[index]
+        post_content = SpiderumAPI.fetch_post_content(bookmark['slug'])
+        self.post_display.display_post_content(
+            post_content, self.enable_tts, self.show_image)
 
 
 if __name__ == '__main__':

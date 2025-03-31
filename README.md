@@ -27,8 +27,12 @@ python main.py
 - `L`: To show list of articles.
 - `V`: To enable/disable the text-to-speech feature.
 - `I`: To enable/disable showing images in the article.
+- `U`: Show post via URL.
 - `B`: To bookmark the article.
+- `BM`: To show the list of bookmarked articles.
 - `H`: To show the help menu.
+- `Number keys`: To read the article.
+- `B or b` + `Number keys`: To read the bookmarked article.
 
 
 **⚠️ Notes:** On Windows, the Speak-to-Text feature uses the pyttsx3 library, which requires the Vietnamese voice to be enabled. To enable Vietnamese voice on Windows, follow the instructions in this [video tutorial](https://www.youtube.com/watch?v=aw7FVWOY1yE). On other operating systems, the feature will use the Google Text-to-Speech API to read the article.

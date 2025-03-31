@@ -104,6 +104,24 @@ class PostDisplay:
             self.tts.speak(text)
         elif enable_tts:
             Printer.print_with_style("Error initializing TTS", color=RED)
+            
+    def show_bookmarks(self, bookmarks):
+        """
+        Display the list of bookmarks.
+
+        Args:
+            bookmarks (list): List of bookmarks.
+
+        Returns:
+            None
+        """
+        if not bookmarks:
+            Printer.print_with_style("No bookmarks found.", color=RED)
+            return
+
+        Printer.print_with_style("Bookmarks:", color=GREEN)
+        for idx, bookmark in enumerate(bookmarks):
+            Printer.print_with_style(f'{idx + 1}. {bookmark["title"]}', color=PURPLE)
 
     @staticmethod
     def show_help():
