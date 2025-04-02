@@ -31,7 +31,8 @@ def add_post_to_bookmarks(post):
             json.dump(bookmarks, file, indent=4)
         print(f"Post saved to {file_path}")
     except Exception as e:
-        print(f"Error: {e}")
+        print(
+            f"Error: {e}. In the darkest depths of the codebase... an error was born. 🌑")
 
 
 def list_bookmarks():
@@ -45,4 +46,5 @@ def list_bookmarks():
             bookmarks = json.load(file)
             return bookmarks
     except Exception as e:
-        print(f"Error: {e}")
+        print(
+            f"Error: {e}. In the darkest depths of the codebase... an error was born. 🌑")

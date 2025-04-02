@@ -33,7 +33,7 @@ class SpiderumAPI:
             response.raise_for_status()
             return response.json()['posts']["items"]
         except requests.exceptions.ConnectionError:
-            print("ConnectionError: retrying in 5 seconds")
+            print("Looks like the connection took a nap. Waking it up in 5 seconds... 😴🔌")
             time.sleep(5)
             return cls.fetch_posts(page_idx)
 
@@ -54,7 +54,7 @@ class SpiderumAPI:
             response.raise_for_status()
             return response.json()["post"]
         except requests.exceptions.ConnectionError:
-            print("ConnectionError: retrying in 5 seconds")
+            print("Looks like the connection took a nap. Waking it up in 5 seconds... 😴🔌")
             time.sleep(5)
             return cls.fetch_post_content(slug)
 
