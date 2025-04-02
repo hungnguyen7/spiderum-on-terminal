@@ -78,10 +78,12 @@ class SpiderumApp:
         """Fetch and display posts from the Spiderum API."""
         if self.enable_tts:
             Printer.print_with_style(
-                "Warning: Text-to-speech is enabled.", color=YELLOW)
+                "Warning: Text-to-speech is ON! Brace yourself for some robotic storytelling! 🤖🎤", color=YELLOW
+            )
         if self.show_image:
             Printer.print_with_style(
-                "Warning: Image is enabled.", color=YELLOW)
+                "Warning: Image is enabled! Prepare for some eye-candy visuals! 👀✨", color=YELLOW
+            )
 
         # * Get the current page index from the database
         page_index = self.page_tracking.get_page_index()
@@ -101,7 +103,8 @@ class SpiderumApp:
     def exit_app(self):
         """Exit the Spiderum app."""
         Printer.print_with_style(
-            "Hope you enjoy reading. Goodbye!", color=GREEN)
+            "Hope you enjoyed the ride! Until next time, goodbye! 🚀👋", color=GREEN
+        )
 
     def next_page(self):
         """Go to the next page."""
@@ -117,7 +120,8 @@ class SpiderumApp:
             self.page_tracking.upsert_page_index(page_index)
             self.fetch_and_display_posts()
         else:
-            Printer.print_with_style("This is the first page", color=YELLOW)
+            Printer.print_with_style(
+                "You're already on the first page! No going back now! 😎", color=YELLOW)
 
     def first_page(self):
         """Go to the first page."""
@@ -142,13 +146,13 @@ class SpiderumApp:
         """Toggle text-to-speech."""
         self.enable_tts = not self.enable_tts
         Printer.print_with_style(
-            f"Text-to-speech is {'enabled' if self.enable_tts else 'disabled'}", color=YELLOW)
+            f"TTS is {'ready to speak' if self.enable_tts else 'shhh... silent'} 🎤", color=YELLOW)
 
     def toggle_image(self):
         """Toggle show image."""
         self.show_image = not self.show_image
         Printer.print_with_style(
-            f"Image is {'enabled' if self.show_image else 'disabled'}", color=YELLOW)
+            f"Images are now {'ON' if self.show_image else 'OFF'} 📸", color=YELLOW)
 
     def display_post(self, index):
         """Display a post."""
@@ -166,7 +170,7 @@ class SpiderumApp:
     def mark_post_as_favorite(self):
         """Mark a post as favorite."""
         if self.selected_post_index is None:
-            Printer.print_with_style("No post selected", color=RED)
+            Printer.print_with_style("Oops! No post picked. 🤷‍♂️", color=RED)
             return
 
         post = self.posts[self.selected_post_index]
@@ -174,13 +178,15 @@ class SpiderumApp:
 
     def show_post_via_url(self):
         """View a post by URL."""
-        url = input("Enter the URL of the post: ").strip()
+        url = input(
+            "Enter the URL, or I'll keep staring at this screen 😅: ").strip()
         post = SpiderumAPI.fetch_post_by_url(url)
         if post:
             self.post_display.render_post_content(
                 post, self.enable_tts, self.show_image)
         else:
-            Printer.print_with_style("Post not found", color=RED)
+            Printer.print_with_style(
+                "Oops! Post not found. Maybe it ran away? 🏃‍♂️💨", color=RED)
 
     def show_bookmarks(self):
         """Show bookmarks."""
@@ -200,5 +206,5 @@ if __name__ == '__main__':
         app = SpiderumApp()
         app.run()
     except KeyboardInterrupt:
-        Printer.print_with_style("\nGoodbye 😉!", color=GREEN)
+        Printer.print_with_style("\nBye-bye! 👋😉", color=GREEN)
         sys.exit()
