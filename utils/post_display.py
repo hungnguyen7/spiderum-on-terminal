@@ -59,6 +59,7 @@ class PostDisplay:
         Returns:
             None
         """
+        Printer.wipe_screen()
         Printer.print_with_style(f'---{post["title"]}---', color=GREEN)
         for block in post["blockBody"]["blocks"]:
             self.display_block(block, enable_tts, show_image)

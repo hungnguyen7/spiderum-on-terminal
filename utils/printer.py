@@ -26,11 +26,11 @@ class Printer:
     def print_with_style(message, color=None):
         """
         Print a message with style.
-        
+
         Args:
             message (str): The message to print.
             color (str): The color of the message.
-            
+
         Returns:
             None
         """
@@ -41,10 +41,10 @@ class Printer:
     def print_image_from_url(url):
         """
         Print an image from a URL.
-        
+
         Args:
             url (str): The URL of the image.
-        
+
         Returns:
             None
         """
@@ -54,3 +54,13 @@ class Printer:
         plt.imshow(img)
         plt.axis('off')  # Hide the axes
         plt.show()
+
+    @staticmethod
+    def wipe_screen():
+        """
+        Clear the screen.
+
+        Returns:
+            None
+        """
+        print("\033c", end="")
