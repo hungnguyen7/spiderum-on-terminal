@@ -1,5 +1,7 @@
 import os
 import json
+from utils.printer import Printer
+from utils.colors import RED, YELLOW, GREEN
 
 
 def add_post_to_bookmarks(post):
@@ -18,7 +20,8 @@ def add_post_to_bookmarks(post):
         # * Check if the post is already bookmarked
         for bookmark in bookmarks:
             if bookmark['slug'] == post['slug']:
-                print("Post already bookmarked.")
+                Printer.print_with_style(
+                    f"Post already bookmarked.", color=RED)
                 return
         # * Add the post to the bookmarks
         bookmarks.append({
@@ -29,7 +32,8 @@ def add_post_to_bookmarks(post):
         # * Save the bookmarks
         with open(file_path, 'w') as file:
             json.dump(bookmarks, file, indent=4)
-        print(f"Post saved to {file_path}")
+        Printer.print_with_style(
+            f"Post saved to bookmarks.", color=GREEN)
     except Exception as e:
         print(
             f"Error: {e}. In the darkest depths of the codebase... an error was born. 🌑")
@@ -40,7 +44,8 @@ def list_bookmarks():
     try:
         file_path = os.path.join('database', 'bookmark.json')
         if not os.path.exists(file_path):
-            print("No bookmarks found.")
+            Printer.print_with_style(
+                f"No bookmarks found.", color=YELLOW)
             return
         with open(file_path, 'r') as file:
             bookmarks = json.load(file)

@@ -39,7 +39,9 @@ class SpiderumApp:
 
         while True:
             ans = input(
-                "Select a post to read, or type 'H' for help, or 'X' to exit: ").upper().strip()
+                "📖 Pick a post to dive into, or type 'H' for help, or 'X' to escape this digital black hole! (Current page: {}) 🌀: "
+                .format(self.page_tracking.get_page_index())
+            ).upper().strip()
             if ans == 'X':
                 self.exit_app()
                 break
@@ -70,7 +72,7 @@ class SpiderumApp:
                 self.display_bookmark(int(ans[1:]) - 1)
             else:
                 Printer.print_with_style(
-                    "Invalid input. Please try again.", color=RED)
+                    "🤔 Oops! That's not a valid option. Try again!", color=RED)
 
     def fetch_and_display_posts(self):
         """Fetch and display posts from the Spiderum API."""
@@ -125,7 +127,7 @@ class SpiderumApp:
 
     def show_help(self):
         """Show help."""
-        self.post_display.show_help()
+        self.post_display.render_help_instructions()
 
     def show_list_posts(self):
         """Show a list of posts."""
@@ -134,7 +136,7 @@ class SpiderumApp:
             post['is_read'] = self.post_tracking.is_post_read(post['slug'])
             posts_with_status.append(post)
 
-        self.post_display.show_list_posts(posts_with_status)
+        self.post_display.render_post_list(posts_with_status)
 
     def toggle_tts(self):
         """Toggle text-to-speech."""
@@ -158,7 +160,7 @@ class SpiderumApp:
 
         # * Fetch and display post content
         post_content = SpiderumAPI.fetch_post_content(slug)
-        self.post_display.display_post_content(
+        self.post_display.render_post_content(
             post_content, self.enable_tts, self.show_image)
 
     def mark_post_as_favorite(self):
@@ -175,7 +177,7 @@ class SpiderumApp:
         url = input("Enter the URL of the post: ").strip()
         post = SpiderumAPI.fetch_post_by_url(url)
         if post:
-            self.post_display.display_post_content(
+            self.post_display.render_post_content(
                 post, self.enable_tts, self.show_image)
         else:
             Printer.print_with_style("Post not found", color=RED)
@@ -183,13 +185,13 @@ class SpiderumApp:
     def show_bookmarks(self):
         """Show bookmarks."""
         self.bookmarks = list_bookmarks()
-        self.post_display.show_bookmarks(self.bookmarks)
+        self.post_display.render_bookmark_list(self.bookmarks)
 
     def display_bookmark(self, index):
         """Display a bookmark."""
         bookmark = self.bookmarks[index]
         post_content = SpiderumAPI.fetch_post_content(bookmark['slug'])
-        self.post_display.display_post_content(
+        self.post_display.render_post_content(
             post_content, self.enable_tts, self.show_image)
 
 

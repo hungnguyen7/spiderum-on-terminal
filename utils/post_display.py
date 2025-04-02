@@ -31,7 +31,7 @@ class PostDisplay:
             return None
 
     @staticmethod
-    def show_list_posts(posts):
+    def render_post_list(posts):
         """
         Display the list of posts.
 
@@ -41,13 +41,14 @@ class PostDisplay:
         Returns:
             None
         """
+        Printer.wipe_screen()
         for idx, post in enumerate(posts):
             status = 'Read' if post["is_read"] else 'New'
             color = PURPLE if post["is_read"] else GREEN
             Printer.print_with_style(
                 f'{idx + 1}. {post["title"]} ({status})', color=color)
 
-    def display_post_content(self, post, enable_tts, show_image):
+    def render_post_content(self, post, enable_tts, show_image):
         """
         Display the content of a post.
 
@@ -62,9 +63,9 @@ class PostDisplay:
         Printer.wipe_screen()
         Printer.print_with_style(f'---{post["title"]}---', color=GREEN)
         for block in post["blockBody"]["blocks"]:
-            self.display_block(block, enable_tts, show_image)
+            self.render_content_block(block, enable_tts, show_image)
 
-    def display_block(self, block, enable_tts, show_image):
+    def render_content_block(self, block, enable_tts, show_image):
         """
         Display a block of content.
 
@@ -83,13 +84,13 @@ class PostDisplay:
             text = re.sub(r'<[^>]*>|&nbsp;', '', block["data"].get("text", ""))
 
         if block_type == "smallerHeader":
-            self.print_and_speak(text, BLUE, enable_tts)
+            self.render_text_with_speech(text, BLUE, enable_tts)
         elif block_type == "paragraph":
-            self.print_and_speak(text, GRAY, enable_tts)
+            self.render_text_with_speech(text, GRAY, enable_tts)
         elif block_type == "image" and show_image:
             Printer.print_image_from_url(block["data"]["file"]["url"])
 
-    def print_and_speak(self, text, color, enable_tts):
+    def render_text_with_speech(self, text, color, enable_tts):
         """
         Print text and speak it if text-to-speech is enabled.
 
@@ -107,7 +108,7 @@ class PostDisplay:
         elif enable_tts:
             Printer.print_with_style("Error initializing TTS", color=RED)
 
-    def show_bookmarks(self, bookmarks):
+    def render_bookmark_list(self, bookmarks):
         """
         Display the list of bookmarks.
 
@@ -117,6 +118,7 @@ class PostDisplay:
         Returns:
             None
         """
+        Printer.wipe_screen()
         if not bookmarks:
             Printer.print_with_style("No bookmarks found.", color=RED)
             return
@@ -127,7 +129,7 @@ class PostDisplay:
                 f'{idx + 1}. {bookmark["title"]}', color=PURPLE)
 
     @staticmethod
-    def show_help():
+    def render_help_instructions():
         """
         Display the help menu.
 
