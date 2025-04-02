@@ -142,8 +142,12 @@ class PostDisplay:
             'L': 'Show list of articles.',
             'V': 'Enable/disable the text-to-speech feature.',
             'I': 'Enable/disable showing images in the article.',
+            'U': 'Show post via URL.',
             'B': 'Bookmark the article (save post to file).',
-            'H': 'Show the help menu.'
+            'BM': 'Show list of bookmarks.',
+            'H': 'Show the help menu.',
+            'Number Keys': 'Read the article with the corresponding number.',
+            '(B||b) + Number Keys': 'Read the bookmark with the corresponding number.',
         }
 
         Printer.print_with_style('Usage:', color=GREEN)
