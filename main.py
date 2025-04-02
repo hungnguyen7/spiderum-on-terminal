@@ -6,6 +6,7 @@ from utils.colors import RED, YELLOW, GREEN
 from utils.printer import Printer
 from utils.bookmark import add_post_to_bookmarks, list_bookmarks
 import sys
+import os
 
 
 class SpiderumApp:
@@ -28,7 +29,7 @@ class SpiderumApp:
         self.post_tracking = PostTracking()
         self.post_display = PostDisplay()
         self.posts = []
-        self.bookmarks = []
+        self.bookmarks = list_bookmarks()
         self.enable_tts = False
         self.show_image = False
         self.selected_post_index = None
@@ -37,42 +38,39 @@ class SpiderumApp:
         """Run the Spiderum app."""
         self.fetch_and_display_posts()
 
+        commands = {
+            'X': self.exit_app,
+            'N': self.next_page,
+            'P': self.previous_page,
+            'F': self.first_page,
+            'H': self.show_help,
+            'L': self.show_list_posts,
+            'V': self.toggle_tts,
+            'I': self.toggle_image,
+            'B': self.mark_post_as_favorite,
+            'BM': self.show_bookmarks,
+            'EB': self.export_bookmarks,
+            'U': self.show_post_via_url
+        }
+
         while True:
             ans = input(
-                "📖 Pick a post to dive into, or type 'H' for help, or 'X' to escape this digital black hole! (Current page: {}) 🌀: "
-                .format(self.page_tracking.get_page_index())
+                f"📖 Pick a post to dive into, or type 'H' for help, or 'X' to escape this digital black hole! "
+                f"(Current page: {self.page_tracking.get_page_index()}) 🌀: "
             ).upper().strip()
-            if ans == 'X':
-                self.exit_app()
-                break
 
-            if ans == 'N':
-                self.next_page()
-            elif ans == 'P':
-                self.previous_page()
-            elif ans == 'F':
-                self.first_page()
-            elif ans == 'H':
-                self.show_help()
-            elif ans == 'L':
-                self.show_list_posts()
-            elif ans == 'V':
-                self.toggle_tts()
-            elif ans == 'I':
-                self.toggle_image()
-            elif ans == 'B':
-                self.mark_post_as_favorite()
-            elif ans == 'BM':
-                self.show_bookmarks()
-            elif ans == 'U':
-                self.show_post_via_url()
+            if ans in commands:
+                commands[ans]()  # Execute the corresponding function
+                if ans == 'X':  # Exit the loop after 'X' command
+                    break
             elif ans.isdigit() and 0 < int(ans) <= len(self.posts):
                 self.display_post(int(ans) - 1)
-            elif ans[0].upper() == 'B' and ans[1:].isdigit() and 0 < int(ans[1:]) <= len(self.bookmarks):
+            elif ans.startswith('B') and len(ans) > 1 and ans[1:].isdigit() and 0 < int(ans[1:]) <= len(self.bookmarks):
                 self.display_bookmark(int(ans[1:]) - 1)
             else:
                 Printer.print_with_style(
-                    "🤔 Oops! That's not a valid option. Try again!", color=RED)
+                    "🤔 Oops! That's not a valid option. Try again!", color=RED
+                )
 
     def fetch_and_display_posts(self):
         """Fetch and display posts from the Spiderum API."""
@@ -170,11 +168,13 @@ class SpiderumApp:
     def mark_post_as_favorite(self):
         """Mark a post as favorite."""
         if self.selected_post_index is None:
-            Printer.print_with_style("Oops! No post picked. 🤷‍♂️", color=RED)
+            Printer.print_with_style("Oops! No post picked. 🤷", color=RED)
             return
 
         post = self.posts[self.selected_post_index]
         add_post_to_bookmarks(post)
+        # * Update bookmarks list
+        self.bookmarks = list_bookmarks()
 
     def show_post_via_url(self):
         """View a post by URL."""
@@ -190,7 +190,6 @@ class SpiderumApp:
 
     def show_bookmarks(self):
         """Show bookmarks."""
-        self.bookmarks = list_bookmarks()
         self.post_display.render_bookmark_list(self.bookmarks)
 
     def display_bookmark(self, index):
@@ -199,6 +198,25 @@ class SpiderumApp:
         post_content = SpiderumAPI.fetch_post_content(bookmark['slug'])
         self.post_display.render_post_content(
             post_content, self.enable_tts, self.show_image)
+
+    def export_bookmarks(self):
+        """Export bookmarks to a file."""
+        bookmarks = list_bookmarks()
+        default_file_name = 'bookmarks.txt'
+
+        # * Use the current directory as the default export path if no filename is provided
+        file_name = input(
+            f"Enter the file name to export bookmarks (default: {default_file_name}): ").strip() or default_file_name
+
+        # * Save the file in the current directory
+        file_path = os.path.join(os.getcwd(), file_name)
+
+        with open(file_path, 'w') as f:
+            for bookmark in bookmarks:
+                f.write(f"{bookmark['title']}\n{bookmark['url']}\n\n")
+
+        Printer.print_with_style(
+            f"Bookmarks exported to {file_path} 📚📦", color=GREEN)
 
 
 if __name__ == '__main__':

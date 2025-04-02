@@ -1,6 +1,6 @@
 import re
 from utils.printer import Printer
-from utils.colors import GREEN, BLUE, PURPLE, RED, GRAY
+from utils.colors import GREEN, BLUE, PURPLE, RED, GRAY, CYAN, YELLOW
 from utils.tts import TTS
 
 
@@ -131,27 +131,36 @@ class PostDisplay:
     @staticmethod
     def render_help_instructions():
         """
-        Display the help menu.
+        Display the help menu in a beautifully formatted way.
 
         Returns:
             None
         """
         keymap = {
-            'N': 'Fetch the next list of articles.',
-            'P': 'Fetch the previous list of articles.',
-            'F': 'Go to the first page of list of articles.',
-            'X': 'Quit the program.',
-            'L': 'Show list of articles.',
-            'V': 'Enable/disable the text-to-speech feature.',
-            'I': 'Enable/disable showing images in the article.',
-            'U': 'Show post via URL.',
-            'B': 'Bookmark the article (save post to file).',
-            'BM': 'Show list of bookmarks.',
-            'H': 'Show the help menu.',
-            'Number Keys': 'Read the article with the corresponding number.',
-            '(B||b) + Number Keys': 'Read the bookmark with the corresponding number.',
+            'N': '➡️  Next stop: More articles! Keep the knowledge train rolling. 🚂',
+            'P': '⬅️  Reverse! Let’s revisit what we left behind. 🕰️',
+            'F': '🔝  Back to square one. Feels like a fresh start, huh?',
+            'X': '🏃  Abort mission! Close the app and reclaim your life. 😆',
+            'L': '📜  Behold! A grand list of all the articles at your service.',
+            'V': '🗣️  Make the computer talk! Or shut it up—it’s your call.',
+            'I': '🖼️  Show or hide images. A picture is worth a thousand words... or is it?',
+            'U': '🌐  Warp through cyberspace! Enter a post URL to teleport. 🌀',
+            'B': '⭐  Save this post to your legendary collection of bookmarks.',
+            'BM': '📖  Open the vault of wisdom—your saved bookmarks!',
+            'EB': '📂  Export bookmarks to a file. 🔑',
+            'H': '🆘  Feeling lost? Call for help.',
+            'Number Keys': '🔢  Pick a post by number—like ordering from a menu. 🍽️',
+            '(B||b) + Number Keys': '🔖  Summon a bookmarked post with a number.',
         }
 
-        Printer.print_with_style('Usage:', color=GREEN)
+        border = "═" * 50
+        Printer.print_with_style(f"\n{border}", color=GREEN)
+        Printer.print_with_style(
+            "📖 COMMANDS & SHORTCUTS 📖".center(50), color=CYAN)
+        Printer.print_with_style(f"{border}", color=GREEN)
+
         for key, action in keymap.items():
-            Printer.print_with_style(f"  Type '{key}' to {action}")
+            Printer.print_with_style(
+                f"  {key.ljust(10)} ➜ {action}", color=YELLOW)
+
+        Printer.print_with_style(f"{border}\n", color=GREEN)

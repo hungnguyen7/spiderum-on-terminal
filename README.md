@@ -30,6 +30,7 @@ python main.py
 - `U`: Show post via URL.
 - `B`: To bookmark the article.
 - `BM`: To show the list of bookmarked articles.
+- `EB`: Export the bookmarked articles to a text file.
 - `H`: To show the help menu.
 - `Number keys`: To read the article.
 - `B or b` + `Number keys`: To read the bookmarked article.
